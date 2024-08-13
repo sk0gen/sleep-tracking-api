@@ -1,7 +1,7 @@
 package main
 
-import "fmt"
+import "github.com/sk0gen/sleep-tracking-api/config"
 
 func main() {
-	fmt.Println("Hello")
+	config.Init()
 }

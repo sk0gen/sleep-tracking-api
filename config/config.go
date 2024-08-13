@@ -1,13 +1,13 @@
 package config
 
-import "time"
+import (
+	"github.com/joho/godotenv"
+	"log"
+)
 
-type PostgresConfig struct {
-	Host            string
-	Port            string
-	User            string
-	Password        string
-	DbName          string
-	SSLMode         string
-	ConnMaxLifetime time.Duration
+func Init() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 }
