@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS sleep_logs;
+DROP TABLE IF EXISTS users;
