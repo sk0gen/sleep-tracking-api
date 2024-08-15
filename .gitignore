@@ -141,3 +141,6 @@ fabric.properties
 
 # env file
 .env
+
+.idea
+.DS_Store
