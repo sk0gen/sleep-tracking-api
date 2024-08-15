@@ -11,9 +11,9 @@ CREATE INDEX ON users (username);
 CREATE TABLE sleep_logs (
                             id UUID PRIMARY KEY,
                             user_id UUID,
-                            sleep_start TIMESTAMP NOT NULL,
-                            sleep_end TIMESTAMP NOT NULL,
-                            sleep_quality VARCHAR(50) NOT NULL,
+                            start_time TIMESTAMP NOT NULL,
+                            end_time TIMESTAMP NOT NULL,
+                            quality VARCHAR(50) NOT NULL,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

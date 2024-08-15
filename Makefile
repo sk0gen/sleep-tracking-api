@@ -1,4 +1,5 @@
 # Simple Makefile for a Go project
+include .env
 
 # Build the application
 all: build
@@ -13,13 +14,17 @@ run:
 	@go run cmd/main.go
 
 # Create DB container
-docker-run:
+docker-up:
 	@if docker compose up 2>/dev/null; then \
 		: ; \
 	else \
 		echo "Falling back to Docker Compose V1"; \
 		docker-compose up; \
 	fi
+
+# Migrate DB
+migration_up:
+	migrate -path internal/database/migrations/ -database "postgresql://$(DB_USERNAME):$(DB_PASSWORD)@localhost:5432/$(DB_DATABASE)?sslmode=disable&search_path=$(DB_SCHEMA)" -verbose up
 
 # Shutdown DB container
 docker-down:
@@ -30,6 +35,9 @@ docker-down:
 		docker-compose down; \
 	fi
 
+sqlc:
+	sqlc generate
+
 # Test the application
 test:
 	@echo "Testing..."
@@ -39,3 +47,5 @@ test:
 clean:
 	@echo "Cleaning..."
 	@rm -f main
+
+.PHONY: all build run docker-up migration_up docker-down sqlc test clean
