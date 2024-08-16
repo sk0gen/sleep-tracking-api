@@ -8,7 +8,7 @@ package db
 import (
 	"context"
 
-	"github.com/jackc/pgx/v5/pgtype"
+	"github.com/google/uuid"
 )
 
 const createUser = `-- name: CreateUser :one
@@ -18,9 +18,9 @@ RETURNING id, username, password_hash, created_at
 `
 
 type CreateUserParams struct {
-	ID           pgtype.UUID `json:"id"`
-	Username     string      `json:"username"`
-	PasswordHash string      `json:"password_hash"`
+	ID           uuid.UUID `json:"id"`
+	Username     string    `json:"username"`
+	PasswordHash string    `json:"password_hash"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {

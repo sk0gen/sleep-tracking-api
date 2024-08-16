@@ -8,6 +8,7 @@ package db
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
@@ -18,7 +19,7 @@ RETURNING id, user_id, start_time, end_time, quality, created_at
 `
 
 type CreateSleepLogParams struct {
-	ID        pgtype.UUID      `json:"id"`
+	ID        uuid.UUID        `json:"id"`
 	UserID    pgtype.UUID      `json:"user_id"`
 	StartTime pgtype.Timestamp `json:"start_time"`
 	EndTime   pgtype.Timestamp `json:"end_time"`

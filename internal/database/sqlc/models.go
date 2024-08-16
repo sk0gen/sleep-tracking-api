@@ -5,11 +5,12 @@
 package db
 
 import (
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type SleepLog struct {
-	ID        pgtype.UUID      `json:"id"`
+	ID        uuid.UUID        `json:"id"`
 	UserID    pgtype.UUID      `json:"user_id"`
 	StartTime pgtype.Timestamp `json:"start_time"`
 	EndTime   pgtype.Timestamp `json:"end_time"`
@@ -18,7 +19,7 @@ type SleepLog struct {
 }
 
 type User struct {
-	ID           pgtype.UUID      `json:"id"`
+	ID           uuid.UUID        `json:"id"`
 	Username     string           `json:"username"`
 	PasswordHash string           `json:"password_hash"`
 	CreatedAt    pgtype.Timestamp `json:"created_at"`
