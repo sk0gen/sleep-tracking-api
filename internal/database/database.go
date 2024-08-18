@@ -1,32 +1,34 @@
 package database
 
 import (
-	"database/sql"
+	"context"
 	"fmt"
-	"log"
-	"os"
-
+	"github.com/caarlos0/env/v11"
+	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/jackc/pgx/v5/stdlib"
+	"log"
 )
 
-var (
-	databaseName = os.Getenv("DB_DATABASE")
-	password     = os.Getenv("DB_PASSWORD")
-	username     = os.Getenv("DB_USERNAME")
-	port         = os.Getenv("DB_PORT")
-	host         = os.Getenv("DB_HOST")
-	schema       = os.Getenv("DB_SCHEMA")
-)
+type Config struct {
+	Name     string `env:"DB_DATABASE"`
+	User     string `env:"DB_USERNAME"`
+	Password string `env:"DB_PASSWORD"`
+	Host     string `env:"DB_HOST"`
+	Port     string `env:"DB_PORT"`
+	Schema   string `env:"DB_SCHEMA"`
+}
 
-func New() (*sql.DB, error) {
-	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable&search_path=%s", username, password, host, port, databaseName, schema)
-	db, err := sql.Open("pgx", connStr)
+func New() (*pgxpool.Pool, error) {
+
+	var cfg Config
+	if err := env.Parse(&cfg); err != nil {
+		log.Fatalf("Error parsing environment variables: %s", err)
+	}
+
+	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable&search_path=%s", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Name, cfg.Schema)
+	dbPool, err := pgxpool.New(context.Background(), connStr)
 	if nil != err {
 		log.Fatal(err)
 	}
-	err = db.Ping()
-	if err != nil {
-		return nil, err
-	}
-	return db, nil
+	return dbPool, nil
 }

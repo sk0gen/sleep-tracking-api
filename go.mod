@@ -3,10 +3,11 @@ module github.com/sk0gen/sleep-tracking-api
 go 1.22.6
 
 require (
+	github.com/caarlos0/env/v11 v11.2.2
 	github.com/gin-gonic/gin v1.10.0
+	github.com/google/uuid v1.3.0
 	github.com/jackc/pgx/v5 v5.6.0
 	github.com/joho/godotenv v1.5.1
-	github.com/google/uuid v1.3.0
 )
 
 require (
