@@ -1,5 +1,6 @@
 # Simple Makefile for a Go project
-include .env
+-include .env.test
+-include .env
 
 # Build the application
 all: build

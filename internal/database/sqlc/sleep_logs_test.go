@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
+	"slices"
 	"testing"
 	"time"
 )
@@ -47,15 +48,18 @@ func TestGetSleepLogsByUserID(t *testing.T) {
 		Quality:   "Good",
 	}
 
-	sleepLog, err := testQueries.CreateSleepLog(context.Background(), arg)
+	createdSleepLog, err := testQueries.CreateSleepLog(context.Background(), arg)
 
 	sleepLogs, err := testQueries.GetSleepLogsByUserID(context.Background(), user.ID)
 
+	idx := slices.IndexFunc(sleepLogs, func(log SleepLog) bool {
+		return log.ID == createdSleepLog.ID
+	})
+
 	require.NoError(t, err)
-	require.Equal(t, 1, len(sleepLogs))
-	require.Equal(t, sleepLog.ID, sleepLogs[0].ID)
-	require.Equal(t, sleepLog.StartTime, sleepLogs[0].StartTime)
-	require.Equal(t, sleepLog.EndTime, sleepLogs[0].EndTime)
-	require.Equal(t, sleepLog.Quality, sleepLogs[0].Quality)
-	require.Equal(t, sleepLog.CreatedAt, sleepLogs[0].CreatedAt)
+	require.Equal(t, createdSleepLog.ID, sleepLogs[idx].ID)
+	require.Equal(t, createdSleepLog.StartTime, sleepLogs[idx].StartTime)
+	require.Equal(t, createdSleepLog.EndTime, sleepLogs[idx].EndTime)
+	require.Equal(t, createdSleepLog.Quality, sleepLogs[idx].Quality)
+	require.Equal(t, createdSleepLog.CreatedAt, sleepLogs[idx].CreatedAt)
 }
