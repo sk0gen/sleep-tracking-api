@@ -5,22 +5,23 @@
 package db
 
 import (
+	"time"
+
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type SleepLog struct {
-	ID        uuid.UUID        `json:"id"`
-	UserID    pgtype.UUID      `json:"user_id"`
-	StartTime pgtype.Timestamp `json:"start_time"`
-	EndTime   pgtype.Timestamp `json:"end_time"`
-	Quality   string           `json:"quality"`
-	CreatedAt pgtype.Timestamp `json:"created_at"`
+	ID        uuid.UUID `json:"id"`
+	UserID    uuid.UUID `json:"user_id"`
+	StartTime time.Time `json:"start_time"`
+	EndTime   time.Time `json:"end_time"`
+	Quality   string    `json:"quality"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 type User struct {
-	ID           uuid.UUID        `json:"id"`
-	Username     string           `json:"username"`
-	PasswordHash string           `json:"password_hash"`
-	CreatedAt    pgtype.Timestamp `json:"created_at"`
+	ID           uuid.UUID `json:"id"`
+	Username     string    `json:"username"`
+	PasswordHash string    `json:"password_hash"`
+	CreatedAt    time.Time `json:"created_at"`
 }

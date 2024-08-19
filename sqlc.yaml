@@ -21,3 +21,19 @@ sql:
                     go_type:
                       import: "github.com/google/uuid"
                       type: "UUID"
+                    nullable: true
+                  - db_type: "uuid"
+                    go_type:
+                      import: "github.com/google/uuid"
+                      type: "UUID"
+                    null: false
+                  - db_type: "pg_catalog.timestamp"
+                    go_type:
+                      import: "time"
+                      type: "Time"
+                    null: true
+                  - db_type: "pg_catalog.timestamp"
+                    go_type:
+                      import: "time"
+                      type: "Time"
+                    null: false

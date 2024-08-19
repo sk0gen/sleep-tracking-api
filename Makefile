@@ -24,8 +24,10 @@ docker-up:
 
 # Migrate DB
 migration_up:
-	migrate -path internal/database/migrations/ -database "postgresql://$(DB_USERNAME):$(DB_PASSWORD)@localhost:5432/$(DB_DATABASE)?sslmode=disable&search_path=$(DB_SCHEMA)" -verbose up
+	migrate -path internal/database/migrations/ -database "postgresql://$(DB_USERNAME):$(DB_PASSWORD)@localhost:5432/$(DB_DATABASE)?sslmode=disable" -verbose up
 
+migration_down:
+	migrate -path internal/database/migrations/ -database "postgresql://$(DB_USERNAME):$(DB_PASSWORD)@localhost:5432/$(DB_DATABASE)?sslmode=disable" -verbose down
 # Shutdown DB container
 docker-down:
 	@if docker compose down 2>/dev/null; then \

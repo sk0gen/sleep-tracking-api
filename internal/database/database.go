@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/caarlos0/env/v11"
 	"github.com/jackc/pgx/v5/pgxpool"
-	_ "github.com/jackc/pgx/v5/stdlib"
 	"log"
 )
 
@@ -15,7 +14,6 @@ type Config struct {
 	Password string `env:"DB_PASSWORD"`
 	Host     string `env:"DB_HOST"`
 	Port     string `env:"DB_PORT"`
-	Schema   string `env:"DB_SCHEMA"`
 }
 
 func New() (*pgxpool.Pool, error) {
@@ -25,7 +23,7 @@ func New() (*pgxpool.Pool, error) {
 		log.Fatalf("Error parsing environment variables: %s", err)
 	}
 
-	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable&search_path=%s", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Name, cfg.Schema)
+	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Name)
 	dbPool, err := pgxpool.New(context.Background(), connStr)
 	if nil != err {
 		log.Fatal(err)

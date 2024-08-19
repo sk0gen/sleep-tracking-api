@@ -7,24 +7,23 @@ package db
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createSleepLog = `-- name: CreateSleepLog :one
-INSERT INTO sleep_logs (id, user_id, start_time, end_time, quality, created_at)
-VALUES ($1, $2, $3, $4, $5, $6)
+INSERT INTO sleep_logs (id, user_id, start_time, end_time, quality)
+VALUES ($1, $2, $3, $4, $5)
 RETURNING id, user_id, start_time, end_time, quality, created_at
 `
 
 type CreateSleepLogParams struct {
-	ID        uuid.UUID        `json:"id"`
-	UserID    pgtype.UUID      `json:"user_id"`
-	StartTime pgtype.Timestamp `json:"start_time"`
-	EndTime   pgtype.Timestamp `json:"end_time"`
-	Quality   string           `json:"quality"`
-	CreatedAt pgtype.Timestamp `json:"created_at"`
+	ID        uuid.UUID `json:"id"`
+	UserID    uuid.UUID `json:"user_id"`
+	StartTime time.Time `json:"start_time"`
+	EndTime   time.Time `json:"end_time"`
+	Quality   string    `json:"quality"`
 }
 
 func (q *Queries) CreateSleepLog(ctx context.Context, arg CreateSleepLogParams) (SleepLog, error) {
@@ -34,7 +33,6 @@ func (q *Queries) CreateSleepLog(ctx context.Context, arg CreateSleepLogParams) 
 		arg.StartTime,
 		arg.EndTime,
 		arg.Quality,
-		arg.CreatedAt,
 	)
 	var i SleepLog
 	err := row.Scan(
@@ -46,4 +44,37 @@ func (q *Queries) CreateSleepLog(ctx context.Context, arg CreateSleepLogParams) 
 		&i.CreatedAt,
 	)
 	return i, err
+}
+
+const getSleepLogsByUserID = `-- name: GetSleepLogsByUserID :many
+SELECT id, user_id, start_time, end_time, quality, created_at
+FROM sleep_logs
+WHERE user_id = $1
+`
+
+func (q *Queries) GetSleepLogsByUserID(ctx context.Context, userID uuid.UUID) ([]SleepLog, error) {
+	rows, err := q.db.Query(ctx, getSleepLogsByUserID, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []SleepLog{}
+	for rows.Next() {
+		var i SleepLog
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.StartTime,
+			&i.EndTime,
+			&i.Quality,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
