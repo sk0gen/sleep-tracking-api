@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/sk0gen/sleep-tracking-api/internal/api"
-	"github.com/sk0gen/sleep-tracking-api/internal/database"
+	"github.com/sk0gen/sleep-tracking-api/internal/database/sqlc"
 	"log"
 
 	"github.com/joho/godotenv"
@@ -14,7 +14,7 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	db, err := database.NewDatabase()
+	db, err := db.NewDatabase()
 	if err != nil {
 		log.Fatal(err)
 	}

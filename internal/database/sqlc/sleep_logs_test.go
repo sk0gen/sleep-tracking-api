@@ -50,7 +50,12 @@ func TestGetSleepLogsByUserID(t *testing.T) {
 
 	createdSleepLog, err := testQueries.CreateSleepLog(context.Background(), arg)
 
-	sleepLogs, err := testQueries.GetSleepLogsByUserID(context.Background(), user.ID)
+	query := GetSleepLogsByUserIDParams{
+		UserID: user.ID,
+		Limit:  50,
+		Offset: 0,
+	}
+	sleepLogs, err := testQueries.GetSleepLogsByUserID(context.Background(), query)
 
 	idx := slices.IndexFunc(sleepLogs, func(log SleepLog) bool {
 		return log.ID == createdSleepLog.ID

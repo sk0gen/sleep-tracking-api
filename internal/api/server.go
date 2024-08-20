@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/sk0gen/sleep-tracking-api/internal/database"
+	"github.com/sk0gen/sleep-tracking-api/internal/database/sqlc"
 	"log"
 	"net/http"
 	"time"
@@ -20,10 +20,10 @@ type Server struct {
 	router   *gin.Engine
 	logger   *log.Logger
 	config   *Config
-	database *database.DB
+	database *db.DB
 }
 
-func NewServer(database *database.DB) *Server {
+func NewServer(database *db.DB) *Server {
 	var cfg Config
 	if err := env.Parse(&cfg); err != nil {
 		log.Fatalf("Error parsing environment variables: %s", err)

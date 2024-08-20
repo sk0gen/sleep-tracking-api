@@ -1,11 +1,10 @@
-package database
+package db
 
 import (
 	"context"
 	"fmt"
 	"github.com/caarlos0/env/v11"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/sk0gen/sleep-tracking-api/internal/database/sqlc"
 	"log"
 )
 
@@ -19,7 +18,7 @@ type config struct {
 
 type DB struct {
 	Pool    *pgxpool.Pool
-	Queries *db.Queries
+	Queries *Queries
 }
 
 func NewDatabase() (*DB, error) {
@@ -36,6 +35,6 @@ func NewDatabase() (*DB, error) {
 	}
 	return &DB{
 		Pool:    dbPool,
-		Queries: db.New(dbPool),
+		Queries: New(dbPool),
 	}, nil
 }

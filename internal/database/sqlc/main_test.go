@@ -2,7 +2,6 @@ package db
 
 import (
 	"github.com/joho/godotenv"
-	"github.com/sk0gen/sleep-tracking-api/internal/database"
 	"log"
 	"os"
 	"testing"
@@ -17,11 +16,11 @@ func TestMain(m *testing.M) {
 		log.Fatalf("Error loading .env.test file: %s", err)
 	}
 
-	pool, err := database.New()
+	db, err := NewDatabase()
 	if err != nil {
 		return
 	}
 
-	testQueries = New(pool)
+	testQueries = db.Queries
 	os.Exit(m.Run())
 }
