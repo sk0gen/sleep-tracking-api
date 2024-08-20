@@ -7,4 +7,7 @@ RETURNING *;
 -- name: GetSleepLogsByUserID :many
 SELECT *
 FROM sleep_logs
-WHERE user_id = $1;
+WHERE user_id = $1
+order by start_time desc
+LIMIT $2
+OFFSET $3;

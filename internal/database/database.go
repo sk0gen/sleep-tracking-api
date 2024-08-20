@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"github.com/caarlos0/env/v11"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/sk0gen/sleep-tracking-api/internal/database/sqlc"
 	"log"
 )
 
-type Config struct {
+type config struct {
 	Name     string `env:"DB_DATABASE"`
 	User     string `env:"DB_USERNAME"`
 	Password string `env:"DB_PASSWORD"`
@@ -16,9 +17,14 @@ type Config struct {
 	Port     string `env:"DB_PORT"`
 }
 
-func New() (*pgxpool.Pool, error) {
+type DB struct {
+	Pool    *pgxpool.Pool
+	Queries *db.Queries
+}
 
-	var cfg Config
+func NewDatabase() (*DB, error) {
+
+	var cfg config
 	if err := env.Parse(&cfg); err != nil {
 		log.Fatalf("Error parsing environment variables: %s", err)
 	}
@@ -28,5 +34,8 @@ func New() (*pgxpool.Pool, error) {
 	if nil != err {
 		log.Fatal(err)
 	}
-	return dbPool, nil
+	return &DB{
+		Pool:    dbPool,
+		Queries: db.New(dbPool),
+	}, nil
 }

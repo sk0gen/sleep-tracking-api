@@ -50,10 +50,19 @@ const getSleepLogsByUserID = `-- name: GetSleepLogsByUserID :many
 SELECT id, user_id, start_time, end_time, quality, created_at
 FROM sleep_logs
 WHERE user_id = $1
+order by start_time desc
+LIMIT $2
+OFFSET $3
 `
 
-func (q *Queries) GetSleepLogsByUserID(ctx context.Context, userID uuid.UUID) ([]SleepLog, error) {
-	rows, err := q.db.Query(ctx, getSleepLogsByUserID, userID)
+type GetSleepLogsByUserIDParams struct {
+	UserID uuid.UUID `json:"user_id"`
+	Limit  int32     `json:"limit"`
+	Offset int32     `json:"offset"`
+}
+
+func (q *Queries) GetSleepLogsByUserID(ctx context.Context, arg GetSleepLogsByUserIDParams) ([]SleepLog, error) {
+	rows, err := q.db.Query(ctx, getSleepLogsByUserID, arg.UserID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

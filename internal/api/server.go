@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/sk0gen/sleep-tracking-api/internal/database"
 	"log"
 	"net/http"
 	"time"
@@ -16,42 +17,59 @@ type Config struct {
 }
 
 type Server struct {
-	router *gin.Engine
-	logger *log.Logger
-	config *Config
+	router   *gin.Engine
+	logger   *log.Logger
+	config   *Config
+	database *database.DB
 }
 
-func Run() {
-
+func NewServer(database *database.DB) *Server {
 	var cfg Config
 	if err := env.Parse(&cfg); err != nil {
 		log.Fatalf("Error parsing environment variables: %s", err)
 	}
-	routersInit := initRoutes()
 
-	server := &http.Server{
-		Addr:         ":" + cfg.HttpServerPort,
-		Handler:      routersInit,
-		ReadTimeout:  cfg.HttpServerTimeout,
-		WriteTimeout: cfg.HttpServerTimeout,
+	server := &Server{
+		logger:   log.Default(),
+		config:   &cfg,
+		database: database,
 	}
 
-	if err := server.ListenAndServe(); err != nil {
-		log.Fatalf("Server start failed: %s", err)
-	}
+	server.initRoutes()
+	return server
 }
 
-func initRoutes() *gin.Engine {
+func (s *Server) Start() error {
+	httpServer := &http.Server{
+		Addr:         ":" + s.config.HttpServerPort,
+		Handler:      s.router,
+		ReadTimeout:  s.config.HttpServerTimeout,
+		WriteTimeout: s.config.HttpServerTimeout,
+	}
+
+	return httpServer.ListenAndServe()
+}
+
+func (s *Server) initRoutes() {
 	r := gin.New()
 
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 
-	r.GET("/", func(c *gin.Context) {
+	v1 := r.Group("/api/v1")
+	v1.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "Hello World",
 		})
 	})
 
-	return r
+	v1.POST("/sleep-logs", s.createSleepLog)
+	v1.GET("/sleep-logs", s.getSleepLogsByUserID)
+	s.router = r
+}
+
+func errorResponse(err error) gin.H {
+	return gin.H{
+		"error": err.Error(),
+	}
 }
