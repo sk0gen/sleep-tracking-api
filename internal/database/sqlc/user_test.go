@@ -9,7 +9,7 @@ import (
 func TestCreateUser(t *testing.T) {
 	arg := NewCreateUserParams()
 
-	user, err := testQueries.CreateUser(context.Background(), arg)
+	user, err := testStore.CreateUser(context.Background(), arg)
 
 	require.NoError(t, err)
 
@@ -23,11 +23,11 @@ func TestCreateUser(t *testing.T) {
 func TestGetUserByUsername(t *testing.T) {
 	arg := NewCreateUserParams()
 
-	_, err := testQueries.CreateUser(context.Background(), arg)
+	_, err := testStore.CreateUser(context.Background(), arg)
 
 	require.NoError(t, err)
 
-	user, err := testQueries.GetUserByUsername(context.Background(), arg.Username)
+	user, err := testStore.GetUserByUsername(context.Background(), arg.Username)
 
 	require.NoError(t, err)
 

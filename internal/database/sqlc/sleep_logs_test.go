@@ -12,7 +12,7 @@ import (
 var user = NewCreateUserParams()
 
 func TestCreateSleepLog(t *testing.T) {
-	_, _ = testQueries.CreateUser(context.Background(), user)
+	_, _ = testStore.CreateUser(context.Background(), user)
 
 	id, _ := uuid.NewUUID()
 
@@ -24,7 +24,7 @@ func TestCreateSleepLog(t *testing.T) {
 		Quality:   "Good",
 	}
 
-	sleepLog, err := testQueries.CreateSleepLog(context.Background(), arg)
+	sleepLog, err := testStore.CreateSleepLog(context.Background(), arg)
 
 	require.NoError(t, err)
 
@@ -36,7 +36,7 @@ func TestCreateSleepLog(t *testing.T) {
 }
 
 func TestGetSleepLogsByUserID(t *testing.T) {
-	_, _ = testQueries.CreateUser(context.Background(), user)
+	_, _ = testStore.CreateUser(context.Background(), user)
 
 	id, _ := uuid.NewUUID()
 
@@ -48,14 +48,14 @@ func TestGetSleepLogsByUserID(t *testing.T) {
 		Quality:   "Good",
 	}
 
-	createdSleepLog, err := testQueries.CreateSleepLog(context.Background(), arg)
+	createdSleepLog, err := testStore.CreateSleepLog(context.Background(), arg)
 
 	query := GetSleepLogsByUserIDParams{
 		UserID: user.ID,
 		Limit:  50,
 		Offset: 0,
 	}
-	sleepLogs, err := testQueries.GetSleepLogsByUserID(context.Background(), query)
+	sleepLogs, err := testStore.GetSleepLogsByUserID(context.Background(), query)
 
 	idx := slices.IndexFunc(sleepLogs, func(log SleepLog) bool {
 		return log.ID == createdSleepLog.ID

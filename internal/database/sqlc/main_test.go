@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-var testQueries *Queries
+var testStore Store
 
 func TestMain(m *testing.M) {
 
@@ -16,11 +16,10 @@ func TestMain(m *testing.M) {
 		log.Fatalf("Error loading .env.test file: %s", err)
 	}
 
-	db, err := NewStore()
+	testStore, err = NewStore()
 	if err != nil {
 		return
 	}
 
-	testQueries = db.Queries
 	os.Exit(m.Run())
 }
