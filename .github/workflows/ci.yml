@@ -9,46 +9,9 @@ on:
       - main
 
 jobs:
-  prep:
-    name: Load env
-    runs-on: ubuntu-latest
-    outputs:
-        DB_DATABASE: ${{ steps.setenv.outputs.DB_DATABASE }}
-        DB_USERNAME: ${{ steps.setenv.outputs.DB_USERNAME }}
-        DB_PASSWORD: ${{ steps.setenv.outputs.DB_PASSWORD }}
-        DB_PORT: ${{ steps.setenv.outputs.DB_PORT }}
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-
-      - name: load env
-        shell: bash
-        id: setenv
-        run: cat .env.test >> $GITHUB_OUTPUT
   test:
     name: Test
     runs-on: ubuntu-latest
-    needs: prep
-    env:
-      DB_DATABASE: ${{ needs.prep.outputs.DB_DATABASE }}
-      DB_USERNAME: ${{ needs.prep.outputs.DB_USERNAME }}
-      DB_PASSWORD: ${{ needs.prep.outputs.DB_PASSWORD }}
-      DB_PORT: ${{ needs.prep.outputs.DB_PORT }}
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_DB: ${{ env.DB_DATABASE }}
-          POSTGRES_USER: ${{ env.DB_USERNAME }}
-          POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
-          DB_PORT: ${{ env.DB_PORT }}
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
 
     steps:
       - name: Set up Go 1.22
@@ -62,12 +25,6 @@ jobs:
 
       - name : Install dependencies
         run: go mod download
-
-      - name: Install go-migrate
-        run: go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
-
-      - name: Run migrations
-        run: make migration_up
 
       - name: Run tests
         run: make test
