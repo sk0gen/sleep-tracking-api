@@ -14,12 +14,12 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	db, err := db.NewDatabase()
+	db, err := db.NewStore()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	defer db.Pool.Close()
+	defer db.Close()
 
 	// Start the server
 	server := api.NewServer(db)

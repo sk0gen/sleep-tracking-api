@@ -16,12 +16,17 @@ type config struct {
 	Port     string `env:"DB_PORT"`
 }
 
-type DB struct {
-	Pool    *pgxpool.Pool
-	Queries *Queries
+type Store interface {
+	Querier
+	Close()
 }
 
-func NewDatabase() (*DB, error) {
+type SqlStore struct {
+	connPool *pgxpool.Pool
+	*Queries
+}
+
+func NewStore() (Store, error) {
 
 	var cfg config
 	if err := env.Parse(&cfg); err != nil {
@@ -33,8 +38,13 @@ func NewDatabase() (*DB, error) {
 	if nil != err {
 		log.Fatal(err)
 	}
-	return &DB{
-		Pool:    dbPool,
-		Queries: New(dbPool),
+
+	return &SqlStore{
+		connPool: dbPool,
+		Queries:  New(dbPool),
 	}, nil
+}
+
+func (store *SqlStore) Close() {
+	store.connPool.Close()
 }

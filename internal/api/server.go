@@ -20,10 +20,10 @@ type Server struct {
 	router   *gin.Engine
 	logger   *log.Logger
 	config   *Config
-	database *db.DB
+	database db.Store
 }
 
-func NewServer(database *db.DB) *Server {
+func NewServer(database db.Store) *Server {
 	var cfg Config
 	if err := env.Parse(&cfg); err != nil {
 		log.Fatalf("Error parsing environment variables: %s", err)

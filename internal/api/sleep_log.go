@@ -29,7 +29,7 @@ func (s *Server) createSleepLog(ctx *gin.Context) {
 		Quality:   req.Quality,
 	}
 
-	sleepLog, err := s.database.Queries.CreateSleepLog(ctx, arg)
+	sleepLog, err := s.database.CreateSleepLog(ctx, arg)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -39,8 +39,8 @@ func (s *Server) createSleepLog(ctx *gin.Context) {
 }
 
 type getSleepLogs struct {
-	page_number int32 `json:"page_number" binding:"required,min=1"`
-	page_size   int32 `json:"page_size" binding:"required,min=1,max=100"`
+	pageNumber int32 `json:"pageNumber" binding:"required,min=1"`
+	pageSize   int32 `json:"pageSize" binding:"required,min=1,max=100"`
 }
 
 // GetSleepLogsByUserID returns all sleep logs for a user
@@ -59,11 +59,11 @@ func (s *Server) getSleepLogsByUserID(ctx *gin.Context) {
 
 	arg := db.GetSleepLogsByUserIDParams{
 		UserID: userID,
-		Limit:  req.page_size,
-		Offset: (req.page_number - 1) * req.page_size,
+		Limit:  req.pageSize,
+		Offset: (req.pageNumber - 1) * req.pageSize,
 	}
 
-	sleepLogs, err := s.database.Queries.GetSleepLogsByUserID(ctx, arg)
+	sleepLogs, err := s.database.GetSleepLogsByUserID(ctx, arg)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return

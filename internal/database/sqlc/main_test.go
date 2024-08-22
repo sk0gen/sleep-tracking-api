@@ -16,7 +16,7 @@ func TestMain(m *testing.M) {
 		log.Fatalf("Error loading .env.test file: %s", err)
 	}
 
-	db, err := NewDatabase()
+	db, err := NewStore()
 	if err != nil {
 		return
 	}
