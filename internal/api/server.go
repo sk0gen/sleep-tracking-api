@@ -62,7 +62,7 @@ func (s *Server) initRoutes() {
 			"message": "Hello World",
 		})
 	})
-
+	v1.POST("/auth/sign-in", s.CreateUser)
 	v1.POST("/sleep-logs", s.createSleepLog)
 	v1.GET("/sleep-logs", s.getSleepLogsByUserID)
 	s.router = r
