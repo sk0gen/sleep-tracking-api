@@ -9,6 +9,8 @@ import (
 )
 
 func TestNewJWTMaker(t *testing.T) {
+	t.Parallel()
+
 	maker := NewJWTMaker(util.RandomString(32))
 
 	userId := uuid.New()
@@ -27,6 +29,8 @@ func TestNewJWTMaker(t *testing.T) {
 }
 
 func TestExpiredJWTToken(t *testing.T) {
+	t.Parallel()
+
 	maker := NewJWTMaker(util.RandomString(32))
 
 	username := uuid.New()

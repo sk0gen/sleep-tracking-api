@@ -6,6 +6,7 @@ import (
 )
 
 func TestPassword(t *testing.T) {
+	t.Parallel()
 	password := RandomString(6)
 
 	hashedPassword, err := HashPassword(password)

@@ -7,6 +7,8 @@ import (
 )
 
 func TestCreateUser(t *testing.T) {
+	t.Parallel()
+
 	arg := NewCreateUserParams()
 
 	user, err := testStore.CreateUser(context.Background(), arg)
@@ -21,6 +23,8 @@ func TestCreateUser(t *testing.T) {
 }
 
 func TestGetUserByUsername(t *testing.T) {
+	t.Parallel()
+
 	arg := NewCreateUserParams()
 
 	_, err := testStore.CreateUser(context.Background(), arg)

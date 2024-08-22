@@ -10,6 +10,8 @@ import (
 )
 
 func newTestServer(t *testing.T, store db.Store) *Server {
+	t.Helper()
+
 	cfg := &Config{
 		ApiConfig: ApiConfig{
 			JWTSecret:          util.RandomString(32),

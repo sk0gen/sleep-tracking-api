@@ -12,6 +12,8 @@ import (
 var user = NewCreateUserParams()
 
 func TestCreateSleepLog(t *testing.T) {
+	t.Parallel()
+
 	_, _ = testStore.CreateUser(context.Background(), user)
 
 	id := uuid.New()
@@ -36,6 +38,8 @@ func TestCreateSleepLog(t *testing.T) {
 }
 
 func TestGetSleepLogsByUserID(t *testing.T) {
+	t.Parallel()
+
 	_, _ = testStore.CreateUser(context.Background(), user)
 
 	id := uuid.New()

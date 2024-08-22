@@ -12,7 +12,7 @@ import (
 
 type createUserRequest struct {
 	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required,min=10"`
+	Password string `json:"password" binding:"required,min=10,strongpassword"`
 }
 
 type userResponse struct {

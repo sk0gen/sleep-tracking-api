@@ -23,6 +23,11 @@ func (s *Server) createSleepLog(ctx *gin.Context) {
 	}
 	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
 
+	if req.EndTime.Before(req.StartTime) {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Sleep end time must be after start time"})
+		return
+	}
+
 	arg := db.CreateSleepLogParams{
 		ID:        uuid.New(),
 		UserID:    authPayload.UserID,

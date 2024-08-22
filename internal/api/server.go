@@ -2,8 +2,11 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"github.com/go-playground/validator/v10"
 	"github.com/sk0gen/sleep-tracking-api/internal/database/sqlc"
 	"github.com/sk0gen/sleep-tracking-api/internal/token"
+	"github.com/sk0gen/sleep-tracking-api/util"
 	"log"
 	"net/http"
 )
@@ -23,6 +26,10 @@ func NewServer(cfg Config, store db.Store) *Server {
 		config:   cfg,
 		store:    store,
 		jwtMaker: token.NewJWTMaker(cfg.ApiConfig.JWTSecret),
+	}
+
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		v.RegisterValidation("strongpassword", util.StrongPassword)
 	}
 
 	server.initRoutes()
