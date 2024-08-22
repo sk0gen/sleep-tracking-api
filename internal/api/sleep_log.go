@@ -29,7 +29,7 @@ func (s *Server) createSleepLog(ctx *gin.Context) {
 		Quality:   req.Quality,
 	}
 
-	sleepLog, err := s.database.CreateSleepLog(ctx, arg)
+	sleepLog, err := s.store.CreateSleepLog(ctx, arg)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -63,7 +63,7 @@ func (s *Server) getSleepLogsByUserID(ctx *gin.Context) {
 		Offset: (req.pageNumber - 1) * req.pageSize,
 	}
 
-	sleepLogs, err := s.database.GetSleepLogsByUserID(ctx, arg)
+	sleepLogs, err := s.store.GetSleepLogsByUserID(ctx, arg)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
