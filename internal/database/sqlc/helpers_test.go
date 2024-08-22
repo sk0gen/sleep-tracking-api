@@ -6,7 +6,7 @@ import (
 )
 
 func NewCreateUserParams() CreateUserParams {
-	id, _ := uuid.NewUUID()
+	id := uuid.New()
 
 	password := util.RandomString(6)
 	passwordHash, _ := util.HashPassword(password)

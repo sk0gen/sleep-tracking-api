@@ -9,11 +9,11 @@ import (
 
 var (
 	ErrInvalidToken = errors.New("token is invalid")
-	ErrExpiredToken = errors.New("token has expired")
 )
 
 type Payload struct {
-	Id       uuid.UUID `json:"id"`
+	ID       uuid.UUID `json:"id"`
+	UserID   uuid.UUID `json:"userId"`
 	Username string    `json:"username"`
 }
 
@@ -32,12 +32,12 @@ func NewJWTMaker(secretKey string) *JWTMaker {
 
 const issuer = "sleep-tracking-api"
 
-func (maker *JWTMaker) CreateToken(username string, duration time.Duration) (string, error) {
+func (maker *JWTMaker) CreateToken(userID uuid.UUID, duration time.Duration) (string, error) {
 
 	claims := &jwtCustomClaims{
 		Payload: Payload{
-			Id:       uuid.New(),
-			Username: username,
+			ID:     uuid.New(),
+			UserID: userID,
 		},
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    issuer,

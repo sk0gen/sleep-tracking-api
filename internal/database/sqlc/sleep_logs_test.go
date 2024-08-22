@@ -14,7 +14,7 @@ var user = NewCreateUserParams()
 func TestCreateSleepLog(t *testing.T) {
 	_, _ = testStore.CreateUser(context.Background(), user)
 
-	id, _ := uuid.NewUUID()
+	id := uuid.New()
 
 	arg := CreateSleepLogParams{
 		ID:        id,
@@ -38,7 +38,7 @@ func TestCreateSleepLog(t *testing.T) {
 func TestGetSleepLogsByUserID(t *testing.T) {
 	_, _ = testStore.CreateUser(context.Background(), user)
 
-	id, _ := uuid.NewUUID()
+	id := uuid.New()
 
 	arg := CreateSleepLogParams{
 		ID:        id,

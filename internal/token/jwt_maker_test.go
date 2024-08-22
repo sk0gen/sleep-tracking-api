@@ -1,6 +1,7 @@
 package token
 
 import (
+	"github.com/google/uuid"
 	"github.com/sk0gen/sleep-tracking-api/util"
 	"github.com/stretchr/testify/require"
 	"testing"
@@ -10,10 +11,10 @@ import (
 func TestNewJWTMaker(t *testing.T) {
 	maker := NewJWTMaker(util.RandomString(32))
 
-	username := util.RandomString(6)
+	userId := uuid.New()
 	duration := time.Minute
 
-	token, err := maker.CreateToken(username, duration)
+	token, err := maker.CreateToken(userId, duration)
 	require.NoError(t, err)
 	require.NotEmpty(t, token)
 
@@ -21,14 +22,14 @@ func TestNewJWTMaker(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEmpty(t, payload)
 
-	require.NotZero(t, payload.Id)
-	require.Equal(t, username, payload.Username)
+	require.NotZero(t, payload.ID)
+	require.Equal(t, userId, payload.UserID)
 }
 
 func TestExpiredJWTToken(t *testing.T) {
 	maker := NewJWTMaker(util.RandomString(32))
 
-	username := util.RandomString(6)
+	username := uuid.New()
 	duration := -time.Minute
 
 	token, err := maker.CreateToken(username, duration)

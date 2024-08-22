@@ -3,6 +3,7 @@ package api
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	db "github.com/sk0gen/sleep-tracking-api/internal/database/sqlc"
 	"github.com/sk0gen/sleep-tracking-api/util"
 	"net/http"
@@ -26,7 +27,7 @@ func newUserResponse(user db.User) userResponse {
 	}
 }
 
-func (s *Server) CreateUser(ctx *gin.Context) {
+func (s *Server) createUser(ctx *gin.Context) {
 	var req createUserRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -40,6 +41,7 @@ func (s *Server) CreateUser(ctx *gin.Context) {
 	}
 
 	arg := db.CreateUserParams{
+		ID:           uuid.New(),
 		Username:     req.Username,
 		PasswordHash: hashedPassword,
 	}
@@ -87,7 +89,7 @@ func (s *Server) loginUser(ctx *gin.Context) {
 	}
 
 	accessToken, err := s.jwtMaker.CreateToken(
-		user.Username,
+		user.ID,
 		s.config.ApiConfig.JWTTokenExpiration,
 	)
 	if err != nil {

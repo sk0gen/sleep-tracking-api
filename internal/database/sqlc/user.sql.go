@@ -11,7 +11,7 @@ import (
 	"github.com/google/uuid"
 )
 
-const createUser = `-- name: CreateUser :one
+const createUser = `-- name: createUser :one
 INSERT INTO users (id, username, password_hash)
 VALUES ($1, $2, $3)
 RETURNING id, username, password_hash, created_at

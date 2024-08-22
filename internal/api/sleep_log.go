@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	db "github.com/sk0gen/sleep-tracking-api/internal/database/sqlc"
+	"github.com/sk0gen/sleep-tracking-api/internal/token"
 	"net/http"
 	"time"
 )
@@ -20,10 +21,11 @@ func (s *Server) createSleepLog(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
 
 	arg := db.CreateSleepLogParams{
 		ID:        uuid.New(),
-		UserID:    uuid.New(), //TODO: Get from claims
+		UserID:    authPayload.UserID,
 		StartTime: req.StartTime,
 		EndTime:   req.EndTime,
 		Quality:   req.Quality,
@@ -39,8 +41,17 @@ func (s *Server) createSleepLog(ctx *gin.Context) {
 }
 
 type getSleepLogs struct {
-	pageNumber int32 `json:"pageNumber" binding:"required,min=1"`
-	pageSize   int32 `json:"pageSize" binding:"required,min=1,max=100"`
+	pageNumber int32 `json:"pageNumber" binding:"min=1"`
+	pageSize   int32 `json:"pageSize" binding:"min=1,max=100"`
+}
+
+func (logs *getSleepLogs) checkDefaults() {
+	if logs.pageNumber == 0 {
+		logs.pageNumber = 1
+	}
+	if logs.pageSize == 0 {
+		logs.pageSize = 10
+	}
 }
 
 // GetSleepLogsByUserID returns all sleep logs for a user
@@ -50,15 +61,12 @@ func (s *Server) getSleepLogsByUserID(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
+	req.checkDefaults()
 
-	userID, err := uuid.Parse(ctx.Param("userID")) // TODO: GET userid from claims
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
 
 	arg := db.GetSleepLogsByUserIDParams{
-		UserID: userID,
+		UserID: authPayload.UserID,
 		Limit:  req.pageSize,
 		Offset: (req.pageNumber - 1) * req.pageSize,
 	}

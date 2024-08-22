@@ -47,8 +47,8 @@ func (s *Server) initRoutes() {
 	r.Use(gin.Recovery())
 
 	v1 := r.Group("/api/v1")
-	v1.POST("/auth/register", s.CreateUser)
-	v1.POST("/auth/login", s.CreateUser)
+	v1.POST("/auth/register", s.createUser)
+	v1.POST("/auth/login", s.loginUser)
 
 	v1authRoutes := v1.Group("/").Use(authMiddleware(s.jwtMaker))
 	v1authRoutes.POST("/sleep-logs", s.createSleepLog)
