@@ -28,6 +28,7 @@ func addAuthorization(
 }
 
 func TestAuthMiddleware(t *testing.T) {
+	t.Parallel()
 	userId := uuid.New()
 	testCases := []struct {
 		name          string
