@@ -1,6 +1,7 @@
 package db
 
 import (
+	"github.com/caarlos0/env/v11"
 	"github.com/joho/godotenv"
 	"log"
 	"os"
@@ -16,7 +17,10 @@ func TestMain(m *testing.M) {
 		log.Fatalf("Error loading .env.test file: %s", err)
 	}
 
-	testStore, err = NewStore()
+	var cfg Config
+	env.Parse(&cfg)
+
+	testStore, err = NewStore(cfg)
 	if err != nil {
 		return
 	}
