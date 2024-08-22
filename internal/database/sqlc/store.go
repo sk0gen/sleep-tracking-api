@@ -15,6 +15,11 @@ type Config struct {
 	Port     string `env:"DB_PORT"`
 }
 
+func (cfg Config) DSN() string {
+	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Name)
+	return connStr
+}
+
 type Store interface {
 	Querier
 	Close()
@@ -26,8 +31,7 @@ type SqlStore struct {
 }
 
 func NewStore(cfg Config) (Store, error) {
-	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Name)
-	dbPool, err := pgxpool.New(context.Background(), connStr)
+	dbPool, err := pgxpool.New(context.Background(), cfg.DSN())
 	if nil != err {
 		log.Fatal(err)
 	}
