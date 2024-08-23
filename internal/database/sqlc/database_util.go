@@ -61,7 +61,7 @@ func NewTestDatabase() *TestDatabase {
 		Port:     port.Port(),
 	}
 
-	RunDBMigration(config.DSN())
+	RunDBMigrationUp(config.DSN())
 
 	return &TestDatabase{
 		container: postgresContainer,
@@ -74,7 +74,7 @@ func (td *TestDatabase) Close() {
 	td.container.Terminate(context.Background())
 }
 
-func RunDBMigration(dbSource string) error {
+func RunDBMigrationUp(dbSource string) error {
 	migrationsUrl := fmt.Sprintf("file://%s", dbMigrationsDir())
 
 	m, err := migrate.New(migrationsUrl, dbSource)
@@ -92,6 +92,11 @@ func RunDBMigration(dbSource string) error {
 		return fmt.Errorf("migrate database error: %w", dbErr)
 	}
 	return nil
+}
+
+func DbMigrationsUrl() string {
+	migrationsUrl := fmt.Sprintf("file://%s", dbMigrationsDir())
+	return migrationsUrl
 }
 
 // dbMigrationsDir returns the path on disk to the migrations. It uses

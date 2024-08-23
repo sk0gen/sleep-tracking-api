@@ -1,14 +1,31 @@
-package main
+/*
+Copyright © 2024 NAME HERE <EMAIL ADDRESS>
+*/
+package cmd
 
 import (
 	"context"
 	"github.com/sk0gen/sleep-tracking-api/internal/api"
-	"github.com/sk0gen/sleep-tracking-api/internal/database/sqlc"
+	db "github.com/sk0gen/sleep-tracking-api/internal/database/sqlc"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/spf13/cobra"
 )
+
+// serveCmd represents the serve command
+var serveCmd = &cobra.Command{
+	Use:   "serve",
+	Short: "Starts the API server",
+	Long:  `Starts the API server`,
+	RunE:  runServe,
+}
+
+func init() {
+	rootCmd.AddCommand(serveCmd)
+}
 
 var interruptSignals = []os.Signal{
 	os.Interrupt,
@@ -16,12 +33,12 @@ var interruptSignals = []os.Signal{
 	syscall.SIGINT,
 }
 
-func main() {
-
+func runServe(cmd *cobra.Command, args []string) error {
 	if err := realMain(); err != nil {
 		log.Printf("ERROR: %v", err)
 		os.Exit(1)
 	}
+	return nil
 }
 
 func realMain() error {

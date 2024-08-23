@@ -7,11 +7,11 @@ all: build
 build:
 	@echo "Building..."
 
-	@go build -o main cmd/main.go
+	@go build -o main main.go
 
 # Run the application
 run:
-	@go run cmd/main.go
+	@go run main.go serve;
 
 # Create DB container
 docker-up:
@@ -22,15 +22,13 @@ docker-up:
 		docker-compose up; \
 	fi
 
-# Migrate DB
 new_migration:
-	migrate create -ext sql -dir internal/database/migrations -seq $(name)
+	docker run --rm -v $(PWD)/internal/database/migrations:/migrations --network host migrate/migrate create -ext sql -dir /migrations -seq $(name); \
+
 
 migration_up:
-	migrate -path internal/database/migrations/ -database "postgresql://$(DB_USERNAME):$(DB_PASSWORD)@localhost:5432/$(DB_DATABASE)?sslmode=disable" -verbose up
+	@go run main.go migrate
 
-migration_down:
-	migrate -path internal/database/migrations/ -database "postgresql://$(DB_USERNAME):$(DB_PASSWORD)@localhost:5432/$(DB_DATABASE)?sslmode=disable" -verbose down
 # Shutdown DB container
 docker-down:
 	@if docker compose down 2>/dev/null; then \
@@ -41,7 +39,7 @@ docker-down:
 	fi
 
 sqlc:
-	sqlc generate
+	docker run --rm -v $(PWD):/src -w /src sqlc/sqlc generate
 
 # Test the application
 test:
