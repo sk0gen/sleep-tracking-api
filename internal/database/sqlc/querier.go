@@ -11,6 +11,7 @@ import (
 type Querier interface {
 	CreateSleepLog(ctx context.Context, arg CreateSleepLogParams) (SleepLog, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
+	DeleteSleepLogByID(ctx context.Context, arg DeleteSleepLogByIDParams) error
 	GetSleepLogsByUserID(ctx context.Context, arg GetSleepLogsByUserIDParams) ([]SleepLog, error)
 	GetUserByUsername(ctx context.Context, username string) (User, error)
 }

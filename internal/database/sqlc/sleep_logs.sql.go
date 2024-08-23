@@ -46,6 +46,21 @@ func (q *Queries) CreateSleepLog(ctx context.Context, arg CreateSleepLogParams) 
 	return i, err
 }
 
+const deleteSleepLogByID = `-- name: DeleteSleepLogByID :exec
+DELETE FROM sleep_logs
+WHERE id = $1 AND user_id = $2
+`
+
+type DeleteSleepLogByIDParams struct {
+	ID     uuid.UUID `json:"id"`
+	UserID uuid.UUID `json:"user_id"`
+}
+
+func (q *Queries) DeleteSleepLogByID(ctx context.Context, arg DeleteSleepLogByIDParams) error {
+	_, err := q.db.Exec(ctx, deleteSleepLogByID, arg.ID, arg.UserID)
+	return err
+}
+
 const getSleepLogsByUserID = `-- name: GetSleepLogsByUserID :many
 SELECT id, user_id, start_time, end_time, quality, created_at
 FROM sleep_logs

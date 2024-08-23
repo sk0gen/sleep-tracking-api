@@ -9,12 +9,9 @@ import (
 	"time"
 )
 
-var user = NewCreateUserParams()
-
 func TestCreateSleepLog(t *testing.T) {
 	t.Parallel()
-
-	_, _ = testStore.CreateUser(context.Background(), user)
+	user, _ := testStore.CreateUser(context.Background(), NewCreateUserParams())
 
 	id := uuid.New()
 
@@ -40,15 +37,15 @@ func TestCreateSleepLog(t *testing.T) {
 func TestGetSleepLogsByUserID(t *testing.T) {
 	t.Parallel()
 
-	_, _ = testStore.CreateUser(context.Background(), user)
+	user, _ := testStore.CreateUser(context.Background(), NewCreateUserParams())
 
 	id := uuid.New()
 
 	arg := CreateSleepLogParams{
 		ID:        id,
 		UserID:    user.ID,
-		StartTime: time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC),
-		EndTime:   time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC),
+		StartTime: time.Date(2021, 1, 2, 0, 0, 0, 0, time.UTC),
+		EndTime:   time.Date(2021, 1, 2, 8, 0, 0, 0, time.UTC),
 		Quality:   "Good",
 	}
 
@@ -71,4 +68,44 @@ func TestGetSleepLogsByUserID(t *testing.T) {
 	require.Equal(t, createdSleepLog.EndTime, sleepLogs[idx].EndTime)
 	require.Equal(t, createdSleepLog.Quality, sleepLogs[idx].Quality)
 	require.Equal(t, createdSleepLog.CreatedAt, sleepLogs[idx].CreatedAt)
+}
+
+func TestDeleteSleepLogById(t *testing.T) {
+	t.Parallel()
+
+	user, _ := testStore.CreateUser(context.Background(), NewCreateUserParams())
+
+	id := uuid.New()
+
+	arg := CreateSleepLogParams{
+		ID:        id,
+		UserID:    user.ID,
+		StartTime: time.Date(2021, 1, 3, 0, 0, 0, 0, time.UTC),
+		EndTime:   time.Date(2021, 1, 3, 8, 0, 0, 0, time.UTC),
+		Quality:   "Good",
+	}
+
+	_, err := testStore.CreateSleepLog(context.Background(), arg)
+	require.NoError(t, err)
+
+	query := GetSleepLogsByUserIDParams{
+		UserID: user.ID,
+		Limit:  50,
+		Offset: 0,
+	}
+	sleepLogs, err := testStore.GetSleepLogsByUserID(context.Background(), query)
+	require.NoError(t, err)
+	require.Len(t, sleepLogs, 1)
+
+	deleteQuery := DeleteSleepLogByIDParams{
+		ID:     id,
+		UserID: user.ID,
+	}
+
+	err = testStore.DeleteSleepLogByID(context.Background(), deleteQuery)
+	require.NoError(t, err)
+
+	sleepLogs, err = testStore.GetSleepLogsByUserID(context.Background(), query)
+	require.NoError(t, err)
+	require.Len(t, sleepLogs, 0)
 }
