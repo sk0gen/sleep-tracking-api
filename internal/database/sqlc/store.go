@@ -30,8 +30,8 @@ type SqlStore struct {
 	*Queries
 }
 
-func NewStore(cfg Config) (Store, error) {
-	dbPool, err := pgxpool.New(context.Background(), cfg.DSN())
+func NewStore(ctx context.Context, cfg Config) (Store, error) {
+	dbPool, err := pgxpool.New(ctx, cfg.DSN())
 	if nil != err {
 		log.Fatal(err)
 	}

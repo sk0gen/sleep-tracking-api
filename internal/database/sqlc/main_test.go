@@ -1,6 +1,7 @@
 package db
 
 import (
+	"context"
 	"os"
 	"testing"
 )
@@ -12,7 +13,7 @@ func TestMain(m *testing.M) {
 	testDatabase = NewTestDatabase()
 
 	var err error
-	testStore, err = NewStore(testDatabase.config)
+	testStore, err = NewStore(context.Background(), testDatabase.Config)
 	if err != nil {
 		close()
 	}

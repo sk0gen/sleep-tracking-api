@@ -19,7 +19,7 @@ import (
 
 type TestDatabase struct {
 	container testcontainers.Container
-	config    Config
+	Config    Config
 }
 
 func NewTestDatabase() *TestDatabase {
@@ -65,7 +65,7 @@ func NewTestDatabase() *TestDatabase {
 
 	return &TestDatabase{
 		container: postgresContainer,
-		config:    config,
+		Config:    config,
 	}
 
 }

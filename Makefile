@@ -23,6 +23,9 @@ docker-up:
 	fi
 
 # Migrate DB
+new_migration:
+	migrate create -ext sql -dir internal/database/migrations -seq $(name)
+
 migration_up:
 	migrate -path internal/database/migrations/ -database "postgresql://$(DB_USERNAME):$(DB_PASSWORD)@localhost:5432/$(DB_DATABASE)?sslmode=disable" -verbose up
 
@@ -50,4 +53,4 @@ clean:
 	@echo "Cleaning..."
 	@rm -f main
 
-.PHONY: all build run docker-up migration_up docker-down sqlc test clean
+.PHONY: all build run docker-up new_migration migration_up docker-down sqlc test clean
