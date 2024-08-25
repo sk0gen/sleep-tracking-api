@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/sk0gen/sleep-tracking-api/internal/pb";
+
+message GetUserSleepLogsRequest {
+  int32 pageNumber = 1;
+  int32 pageSize = 2;
+}
+
+message UserSleepLog {
+  string id = 1;
+  google.protobuf.Timestamp start_time = 2;
+  google.protobuf.Timestamp end_time = 3;
+  string quality = 4;
+  google.protobuf.Timestamp created_at = 5;
+}
+
+message GetUserSleepLogsResponse {
+  repeated UserSleepLog sleep_logs = 1;
+}

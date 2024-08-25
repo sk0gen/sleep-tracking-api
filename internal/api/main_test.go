@@ -3,7 +3,9 @@ package api
 import (
 	"context"
 	"github.com/gin-gonic/gin"
+	"github.com/sk0gen/sleep-tracking-api/internal/config"
 	db "github.com/sk0gen/sleep-tracking-api/internal/database/sqlc"
+	"github.com/sk0gen/sleep-tracking-api/internal/token"
 	"github.com/sk0gen/sleep-tracking-api/util"
 	"os"
 	"testing"
@@ -16,12 +18,12 @@ var testDatabase *db.TestDatabase
 func newTestServer(t *testing.T) *Server {
 	t.Helper()
 
-	cfg := &Config{
-		ApiConfig: ApiConfig{
+	cfg := &config.Config{
+		Database: testDatabase.Config,
+		AuthConfig: token.Config{
 			JWTSecret:          util.RandomString(32),
 			JWTTokenExpiration: time.Minute,
 		},
-		Database: testDatabase.Config,
 	}
 
 	server := NewServer(*cfg, testStore)

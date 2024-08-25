@@ -6,7 +6,10 @@ package cmd
 import (
 	"context"
 	"github.com/sk0gen/sleep-tracking-api/internal/api"
+	"github.com/sk0gen/sleep-tracking-api/internal/config"
 	db "github.com/sk0gen/sleep-tracking-api/internal/database/sqlc"
+	"github.com/sk0gen/sleep-tracking-api/internal/gapi"
+	"golang.org/x/sync/errgroup"
 	"log"
 	"os"
 	"os/signal"
@@ -42,7 +45,7 @@ func runServe(cmd *cobra.Command, args []string) error {
 }
 
 func realMain() error {
-	cfg := api.NewConfig()
+	cfg := config.NewConfig()
 
 	ctx, done := signal.NotifyContext(context.Background(), interruptSignals...)
 
@@ -54,11 +57,22 @@ func realMain() error {
 	}
 	defer db.Close()
 
-	// Start the server
+	waitGroup, ctx := errgroup.WithContext(ctx)
+	startAPIServer(ctx, waitGroup, cfg, db)
+	startGRPCServer(ctx, waitGroup, cfg, db)
+	return waitGroup.Wait()
+}
+
+func startAPIServer(ctx context.Context, waitGroup *errgroup.Group, cfg config.Config, db db.Store) {
 	server := api.NewServer(cfg, db)
-	err = server.Start(ctx)
-	if err != nil {
-		return err
-	}
-	return nil
+	waitGroup.Go(func() error {
+		return server.Start(ctx)
+	})
+}
+
+func startGRPCServer(ctx context.Context, waitGroup *errgroup.Group, cfg config.Config, db db.Store) {
+	server := gapi.NewServer(cfg, db)
+	waitGroup.Go(func() error {
+		return server.Start(ctx)
+	})
 }

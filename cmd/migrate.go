@@ -5,7 +5,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/sk0gen/sleep-tracking-api/internal/api"
+	"github.com/sk0gen/sleep-tracking-api/internal/config"
 	db "github.com/sk0gen/sleep-tracking-api/internal/database/sqlc"
 	"github.com/spf13/cobra"
 )
@@ -21,7 +21,7 @@ func init() {
 }
 
 func runMigrate(cmd *cobra.Command, args []string) error {
-	cfg := api.NewConfig()
+	cfg := config.NewConfig()
 	err := db.RunDBMigrationUp(cfg.Database.DSN())
 	if err != nil {
 		return fmt.Errorf("error running migration: %v", err)

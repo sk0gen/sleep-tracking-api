@@ -51,4 +51,9 @@ clean:
 	@echo "Cleaning..."
 	@rm -f main
 
+proto:
+	rm -f internal/pb/*.go
+	mkdir -p internal/pb
+	protoc --proto_path=internal/proto --go_out=internal/pb --go_opt=paths=source_relative --go-grpc_out=internal/pb --go-grpc_opt=paths=source_relative internal/proto/*.proto
+
 .PHONY: all build run docker-up new_migration migration_up docker-down sqlc test clean

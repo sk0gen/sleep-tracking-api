@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
+	"github.com/sk0gen/sleep-tracking-api/internal/config"
 	"github.com/sk0gen/sleep-tracking-api/internal/database/sqlc"
 	"github.com/sk0gen/sleep-tracking-api/internal/token"
 	"github.com/sk0gen/sleep-tracking-api/util"
@@ -16,20 +17,23 @@ import (
 )
 
 type Server struct {
-	router   *gin.Engine
-	logger   *log.Logger
-	config   Config
-	store    db.Store
-	jwtMaker *token.JWTMaker
+	router    *gin.Engine
+	logger    *log.Logger
+	apiConfig Config
+	config    config.Config
+	store     db.Store
+	jwtMaker  *token.JWTMaker
 }
 
-func NewServer(cfg Config, store db.Store) *Server {
+func NewServer(cfg config.Config, store db.Store) *Server {
+	apiCfg := loadConfig()
 
 	server := &Server{
-		logger:   log.Default(),
-		config:   cfg,
-		store:    store,
-		jwtMaker: token.NewJWTMaker(cfg.ApiConfig.JWTSecret),
+		logger:    log.Default(),
+		config:    cfg,
+		apiConfig: apiCfg,
+		store:     store,
+		jwtMaker:  token.NewJWTMaker(cfg.AuthConfig.JWTSecret),
 	}
 
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
@@ -43,10 +47,10 @@ func NewServer(cfg Config, store db.Store) *Server {
 func (s *Server) Start(ctx context.Context) error {
 
 	srv := &http.Server{
-		Addr:         ":" + s.config.ApiConfig.HttpServerPort,
+		Addr:         ":" + s.apiConfig.HttpServerPort,
 		Handler:      s.router,
-		ReadTimeout:  s.config.ApiConfig.HttpServerTimeout,
-		WriteTimeout: s.config.ApiConfig.HttpServerTimeout,
+		ReadTimeout:  s.apiConfig.HttpServerTimeout,
+		WriteTimeout: s.apiConfig.HttpServerTimeout,
 	}
 
 	errCh := make(chan error, 1)

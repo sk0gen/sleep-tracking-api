@@ -90,7 +90,7 @@ func (s *Server) loginUser(ctx *gin.Context) {
 
 	accessToken, err := s.jwtMaker.CreateToken(
 		user.ID,
-		s.config.ApiConfig.JWTTokenExpiration,
+		s.config.AuthConfig.JWTTokenExpiration,
 	)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))

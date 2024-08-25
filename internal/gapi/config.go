@@ -1,4 +1,4 @@
-package api
+package gapi
 
 import (
 	"github.com/caarlos0/env/v11"
@@ -7,8 +7,8 @@ import (
 )
 
 type Config struct {
-	HttpServerPort    string        `env:"HTTP_SERVER_PORT" ,envDefault:"8080"`
-	HttpServerTimeout time.Duration `env:"HTTP_SERVER_TIMEOUT" ,envDefault:"10s"`
+	GrpcServerPort    string        `env:"GRPC_SERVER_PORT" ,envDefault:"9090"`
+	GrpcServerTimeout time.Duration `env:"GRPC_SERVER_TIMEOUT" ,envDefault:"10s"`
 }
 
 func loadConfig() Config {

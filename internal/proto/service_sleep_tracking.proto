@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package pb;
+
+import "rpc_get_sleep_logs.proto";
+
+option go_package = "github.com/sk0gen/sleep-tracking-api/internal/pb";
+
+service SleepTracking {
+  rpc GetUserSleepLogs(GetUserSleepLogsRequest) returns (GetUserSleepLogsResponse){}
+}
