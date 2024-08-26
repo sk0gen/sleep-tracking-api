@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/sk0gen/sleep-tracking-api/internal/pb";
+
+message LoginUserRequest{
+    string username = 1;
+    string password = 2;
+}
+
+message UserResponse{
+  string Username = 1;
+  google.protobuf.Timestamp CreatedAt = 2;
+}
+
+message LoginResponse{
+  string token = 1;
+  UserResponse user = 2;
+}

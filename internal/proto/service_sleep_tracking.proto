@@ -3,9 +3,11 @@ syntax = "proto3";
 package pb;
 
 import "rpc_get_sleep_logs.proto";
+import "rpc_login_user.proto";
 
 option go_package = "github.com/sk0gen/sleep-tracking-api/internal/pb";
 
 service SleepTracking {
+  rpc LoginUser(LoginUserRequest) returns (LoginResponse){}
   rpc GetUserSleepLogs(GetUserSleepLogsRequest) returns (GetUserSleepLogsResponse){}
 }
