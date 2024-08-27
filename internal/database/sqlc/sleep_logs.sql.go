@@ -61,6 +61,19 @@ func (q *Queries) DeleteSleepLogByID(ctx context.Context, arg DeleteSleepLogByID
 	return err
 }
 
+const getSleepLogCountByUserID = `-- name: GetSleepLogCountByUserID :one
+SELECT COUNT(*)
+FROM sleep_logs
+WHERE user_id = $1
+`
+
+func (q *Queries) GetSleepLogCountByUserID(ctx context.Context, userID uuid.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, getSleepLogCountByUserID, userID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const getSleepLogsByUserID = `-- name: GetSleepLogsByUserID :many
 SELECT id, user_id, start_time, end_time, quality, created_at
 FROM sleep_logs

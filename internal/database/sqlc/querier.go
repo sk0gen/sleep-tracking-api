@@ -6,12 +6,15 @@ package db
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
 type Querier interface {
 	CreateSleepLog(ctx context.Context, arg CreateSleepLogParams) (SleepLog, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	DeleteSleepLogByID(ctx context.Context, arg DeleteSleepLogByIDParams) error
+	GetSleepLogCountByUserID(ctx context.Context, userID uuid.UUID) (int64, error)
 	GetSleepLogsByUserID(ctx context.Context, arg GetSleepLogsByUserIDParams) ([]SleepLog, error)
 	GetUserByUsername(ctx context.Context, username string) (User, error)
 }

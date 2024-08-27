@@ -12,6 +12,11 @@ order by start_time desc
 LIMIT $2
 OFFSET $3;
 
+-- name: GetSleepLogCountByUserID :one
+SELECT COUNT(*)
+FROM sleep_logs
+WHERE user_id = $1;
+
 -- name: DeleteSleepLogByID :exec
 DELETE FROM sleep_logs
 WHERE id = $1 AND user_id = $2;

@@ -76,7 +76,7 @@ func startAPIServer(ctx context.Context, waitGroup *errgroup.Group, cfg config.C
 }
 
 func startGRPCServer(ctx context.Context, waitGroup *errgroup.Group, cfg config.Config, db db.Store, logger *zap.Logger) {
-	server := gapi.NewServer(cfg, db)
+	server := gapi.NewServer(cfg, db, logger)
 	waitGroup.Go(func() error {
 		return server.Start(ctx)
 	})

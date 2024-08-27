@@ -11,6 +11,7 @@ import (
 	"github.com/sk0gen/sleep-tracking-api/internal/pb"
 	"github.com/sk0gen/sleep-tracking-api/internal/token"
 	"github.com/sk0gen/sleep-tracking-api/util"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"log"
@@ -20,16 +21,16 @@ import (
 
 type Server struct {
 	pb.UnimplementedSleepTrackingServer
-	logger   *log.Logger
+	logger   *zap.Logger
 	config   config.Config
 	store    db.Store
 	jwtMaker *token.JWTMaker
 }
 
-func NewServer(cfg config.Config, store db.Store) *Server {
+func NewServer(cfg config.Config, store db.Store, logger *zap.Logger) *Server {
 
 	server := &Server{
-		logger:   log.Default(),
+		logger:   logger,
 		config:   cfg,
 		store:    store,
 		jwtMaker: token.NewJWTMaker(cfg.AuthConfig.JWTSecret),
@@ -56,12 +57,11 @@ func (s *Server) Start(ctx context.Context) error {
 
 	go func() {
 		<-ctx.Done()
-		s.logger.Print("grpc: context closed")
+		s.logger.Info("grpc: shutting down")
 		grpcServer.Stop()
-		s.logger.Print("grpc: shutting down")
 	}()
 
-	s.logger.Printf("grpc: server started on port %s", listener.Addr().String())
+	s.logger.Info("GRPC: server started on port ", zap.String("port", listener.Addr().String()))
 	if err = grpcServer.Serve(listener); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return fmt.Errorf("failed to serve: %w", err)
 	}

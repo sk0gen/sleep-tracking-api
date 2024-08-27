@@ -58,13 +58,13 @@ func (s *Server) Start(ctx context.Context) error {
 	go func() {
 		<-ctx.Done()
 
-		s.logger.Info("server.Serve: context closed")
 		shutdownCtx, done := context.WithTimeout(context.Background(), 5*time.Second)
 		defer done()
 		s.logger.Info("server.Serve: shutting down")
 		errCh <- srv.Shutdown(shutdownCtx)
 	}()
 
+	s.logger.Info("REST: Server started on port", zap.String("port", srv.Addr))
 	if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		s.logger.Error("server.ListenAndServe", zap.Error(err))
 		return err

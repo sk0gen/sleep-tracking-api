@@ -6,7 +6,7 @@ import (
 	"github.com/sk0gen/sleep-tracking-api/internal/config"
 	db "github.com/sk0gen/sleep-tracking-api/internal/database/sqlc"
 	"github.com/sk0gen/sleep-tracking-api/internal/token"
-	"github.com/sk0gen/sleep-tracking-api/util"
+	"go.uber.org/zap"
 	"os"
 	"testing"
 	"time"
@@ -21,12 +21,13 @@ func newTestServer(t *testing.T) *Server {
 	cfg := &config.Config{
 		Database: testDatabase.Config,
 		AuthConfig: token.Config{
-			JWTSecret:          util.RandomString(32),
-			JWTTokenExpiration: time.Minute,
+			JWTSecret:          "secret",
+			JWTTokenExpiration: time.Hour,
 		},
 	}
 
-	server := NewServer(*cfg, testStore)
+	logger, _ := zap.NewDevelopment()
+	server := NewServer(*cfg, testStore, logger)
 
 	return server
 }
