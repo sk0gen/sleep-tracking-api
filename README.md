@@ -61,14 +61,14 @@ make run
 
 ## Backend Development
 
-- [ ] Automatic migrations on `make run`
-- [ ] GRPC
+- <s>Automatic migrations on `make run`</s>
+- [X] GRPC - Implemented simple GRPC server with LoginUser and GetUserSleepLogs methods
 - [ ] Sleep analysis
 - [ ] Tracing/Observability/Metrics
 - [ ] API integration tests
-- [ ] Graceful shutdown
-- [ ] Zap logger? (research)
+- [X] Graceful shutdown
+- [X] Zap logger?
 - [ ] Export sleep data to file?
 - [ ] Extract sleep data
 - [ ] Swagger
-- [ ] Use `go install` to get golang-migrate etc.
+- <s>Use `go install` to get golang-migrate etc.</s> - Decided to use standalone docker solutions for migrations and sqlc
