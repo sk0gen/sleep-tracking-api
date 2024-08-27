@@ -3,7 +3,8 @@ package config
 import (
 	"github.com/caarlos0/env/v11"
 	"github.com/joho/godotenv"
-	db "github.com/sk0gen/sleep-tracking-api/internal/database/sqlc"
+	"github.com/sk0gen/sleep-tracking-api/internal/database/sqlc"
+	"github.com/sk0gen/sleep-tracking-api/internal/logging"
 	"github.com/sk0gen/sleep-tracking-api/internal/token"
 	"log"
 )
@@ -11,6 +12,7 @@ import (
 type Config struct {
 	Database   db.Config
 	AuthConfig token.Config
+	LogConfig  logging.Config
 }
 
 func NewConfig() Config {
