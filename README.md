@@ -51,7 +51,11 @@ mv .env.example .env
 ```
 make docker-up
 ```
-5. Start the server:
+5. Update database schema
+```
+make migration_up
+```
+6. Start the server:
 ```
 make run
 ```
