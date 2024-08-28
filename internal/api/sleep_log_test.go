@@ -33,6 +33,17 @@ func TestCreateSleepLog(t *testing.T) {
 				require.Equal(t, http.StatusOK, recorder.Code)
 			},
 		},
+		{
+			"InvalidStartTime",
+			gin.H{
+				"startTime": "2021-01-01T10:00:00Z",
+				"endTime":   "2021-01-01T08:00:00Z",
+				"quality":   "Good",
+			},
+			func(recorder *httptest.ResponseRecorder) {
+				require.Equal(t, http.StatusBadRequest, recorder.Code)
+			},
+		},
 	}
 	for i := range testCases {
 		tc := testCases[i]

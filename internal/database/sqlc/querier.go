@@ -17,6 +17,7 @@ type Querier interface {
 	GetSleepLogCountByUserID(ctx context.Context, userID uuid.UUID) (int64, error)
 	GetSleepLogsByUserID(ctx context.Context, arg GetSleepLogsByUserIDParams) ([]SleepLog, error)
 	GetUserByUsername(ctx context.Context, username string) (User, error)
+	UpdateSleepLogById(ctx context.Context, arg UpdateSleepLogByIdParams) error
 }
 
 var _ Querier = (*Queries)(nil)

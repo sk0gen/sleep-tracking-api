@@ -20,3 +20,8 @@ WHERE user_id = $1;
 -- name: DeleteSleepLogByID :exec
 DELETE FROM sleep_logs
 WHERE id = $1 AND user_id = $2;
+
+-- name: UpdateSleepLogById :exec
+UPDATE sleep_logs
+SET start_time = $3, end_time = $4, quality = $5
+WHERE id = $1 AND user_id = $2;

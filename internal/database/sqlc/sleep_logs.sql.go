@@ -115,3 +115,28 @@ func (q *Queries) GetSleepLogsByUserID(ctx context.Context, arg GetSleepLogsByUs
 	}
 	return items, nil
 }
+
+const updateSleepLogById = `-- name: UpdateSleepLogById :exec
+UPDATE sleep_logs
+SET start_time = $3, end_time = $4, quality = $5
+WHERE id = $1 AND user_id = $2
+`
+
+type UpdateSleepLogByIdParams struct {
+	ID        uuid.UUID `json:"id"`
+	UserID    uuid.UUID `json:"user_id"`
+	StartTime time.Time `json:"start_time"`
+	EndTime   time.Time `json:"end_time"`
+	Quality   string    `json:"quality"`
+}
+
+func (q *Queries) UpdateSleepLogById(ctx context.Context, arg UpdateSleepLogByIdParams) error {
+	_, err := q.db.Exec(ctx, updateSleepLogById,
+		arg.ID,
+		arg.UserID,
+		arg.StartTime,
+		arg.EndTime,
+		arg.Quality,
+	)
+	return err
+}

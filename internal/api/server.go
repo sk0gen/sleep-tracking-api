@@ -91,7 +91,9 @@ func (s *Server) initRoutes() {
 
 	v1authRoutes := v1.Group("/").Use(authMiddleware(s.jwtMaker))
 	v1authRoutes.POST("/sleep-logs", s.createSleepLog)
-	v1authRoutes.GET("/sleep-logs", s.getSleepLogsByUserID)
+	v1authRoutes.GET("/sleep-logs", s.getSleepLogs)
+	v1authRoutes.DELETE("/sleep-logs/:id", s.deleteSleepLogByID)
+	v1authRoutes.PUT("/sleep-logs/:id", s.updateSleepLogByID)
 	s.router = r
 }
 
