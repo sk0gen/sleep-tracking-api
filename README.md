@@ -69,7 +69,7 @@ make run
 - [X] GRPC - Implemented simple GRPC server with LoginUser and GetUserSleepLogs methods
 - [ ] Sleep analysis
 - [ ] Tracing/Observability/Metrics
-- [ ] API integration tests
+- [X] API integration tests - Half done. No full coverage in Sleep-logs api
 - [X] Graceful shutdown
 - [X] Zap logger?
 - [ ] Export sleep data to file?
