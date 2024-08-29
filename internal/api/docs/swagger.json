@@ -1,0 +1,464 @@
+{
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "title": "Sleep Tracking Api",
+        "contact": {
+            "name": "Wojciech Gawinski",
+            "url": "https://github.com/sk0gen/sleep-tracking-api"
+        },
+        "license": {
+            "name": "MIT License",
+            "url": "https://github.com/stefanprodan/podinfo/blob/master/LICENSE"
+        },
+        "version": "0.1"
+    },
+    "basePath": "/api/v1",
+    "paths": {
+        "/auth/login": {
+            "post": {
+                "description": "Login user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Login user",
+                "parameters": [
+                    {
+                        "description": "User data",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.loginUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.loginUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.errResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/register": {
+            "post": {
+                "description": "Create a new user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Create user",
+                "parameters": [
+                    {
+                        "description": "User data",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.createUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.userResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.errResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/sleep-logs": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Get sleep logs",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "sleep-logs"
+                ],
+                "summary": "Get sleep logs",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "example": 1,
+                        "name": "pageNumber",
+                        "in": "query"
+                    },
+                    {
+                        "maximum": 100,
+                        "type": "integer",
+                        "example": 10,
+                        "name": "pageSize",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/pagination.PaginatedResponse-api_sleepLogResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.errResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Create a new sleep log",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "sleep-logs"
+                ],
+                "summary": "Create sleep log",
+                "parameters": [
+                    {
+                        "description": "Sleep log data",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.createSleepLogRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.sleepLogResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.errResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/sleep-logs/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Updates sleep logs",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "sleep-logs"
+                ],
+                "summary": "Updates sleep log",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Sleep log ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Sleep log data",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.updateSleepLogRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.errResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Deletes sleep logs",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "sleep-logs"
+                ],
+                "summary": "Deletes sleep log",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Sleep log ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.errResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "api.createSleepLogRequest": {
+            "type": "object",
+            "required": [
+                "endTime",
+                "quality",
+                "startTime"
+            ],
+            "properties": {
+                "endTime": {
+                    "type": "string",
+                    "example": "2020-01-02T08:00:00Z"
+                },
+                "quality": {
+                    "type": "string",
+                    "enum": [
+                        "Very Poor",
+                        "Poor",
+                        "Fair",
+                        "Good",
+                        "Very Good",
+                        "Excellent"
+                    ]
+                },
+                "startTime": {
+                    "type": "string",
+                    "example": "2020-01-01T22:00:00Z"
+                }
+            }
+        },
+        "api.createUserRequest": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "minLength": 10,
+                    "example": "Str0ngP@ssw0rd!"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "patient1"
+                }
+            }
+        },
+        "api.errResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.loginUserRequest": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "example": "Str0ngP@ssw0rd!"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "patient1"
+                }
+            }
+        },
+        "api.loginUserResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/api.userResponse"
+                }
+            }
+        },
+        "api.sleepLogResponse": {
+            "type": "object",
+            "required": [
+                "endTime",
+                "startTime"
+            ],
+            "properties": {
+                "createdAt": {
+                    "type": "string",
+                    "example": "2024-01-01T22:22:22Z"
+                },
+                "endTime": {
+                    "type": "string",
+                    "example": "2020-01-02T08:00:00Z"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "quality": {
+                    "type": "string",
+                    "example": "Good"
+                },
+                "startTime": {
+                    "type": "string",
+                    "example": "2020-01-01T22:00:00Z"
+                }
+            }
+        },
+        "api.updateSleepLogRequest": {
+            "type": "object",
+            "required": [
+                "endTime",
+                "quality",
+                "startTime"
+            ],
+            "properties": {
+                "endTime": {
+                    "type": "string",
+                    "example": "2020-01-02T08:00:00Z"
+                },
+                "quality": {
+                    "type": "string",
+                    "enum": [
+                        "Very Poor",
+                        "Poor",
+                        "Fair",
+                        "Good",
+                        "Very Good",
+                        "Excellent"
+                    ]
+                },
+                "startTime": {
+                    "type": "string",
+                    "example": "2020-01-01T22:00:00Z"
+                }
+            }
+        },
+        "api.userResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "pagination.PaginatedResponse-api_sleepLogResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.sleepLogResponse"
+                    }
+                },
+                "pageNumber": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "pageSize": {
+                    "type": "integer",
+                    "example": 10
+                },
+                "totalItems": {
+                    "type": "integer",
+                    "example": 100
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "Bearer": {
+            "description": "Type \"Bearer\" and then your API Token",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

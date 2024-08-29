@@ -8,14 +8,35 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
+	docs "github.com/sk0gen/sleep-tracking-api/internal/api/docs"
 	"github.com/sk0gen/sleep-tracking-api/internal/config"
 	"github.com/sk0gen/sleep-tracking-api/internal/database/sqlc"
 	"github.com/sk0gen/sleep-tracking-api/internal/token"
 	"github.com/sk0gen/sleep-tracking-api/util"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"go.uber.org/zap"
 	"net/http"
 	"time"
 )
+
+// @title Sleep Tracking Api
+// @version 0.1
+// @description
+
+// @contact.name Wojciech Gawinski
+// @contact.url https://github.com/sk0gen/sleep-tracking-api
+
+// @license.name MIT License
+// @license.url https://github.com/stefanprodan/podinfo/blob/master/LICENSE
+
+// @BasePath /api/v1
+// @schemes http
+
+// @securityDefinitions.apikey Bearer
+// @in header
+// @name Authorization
+// @description Type "Bearer" and then your API Token
 
 type Server struct {
 	router    *gin.Engine
@@ -82,6 +103,8 @@ func (s *Server) Start(ctx context.Context) error {
 func (s *Server) initRoutes() {
 	r := gin.New()
 
+	docs.SwaggerInfo.BasePath = "/api/v1"
+
 	r.Use(ginzap.Ginzap(s.logger, time.RFC3339, true))
 	r.Use(ginzap.RecoveryWithZap(s.logger, true))
 
@@ -94,11 +117,15 @@ func (s *Server) initRoutes() {
 	v1authRoutes.GET("/sleep-logs", s.getSleepLogs)
 	v1authRoutes.DELETE("/sleep-logs/:id", s.deleteSleepLogByID)
 	v1authRoutes.PUT("/sleep-logs/:id", s.updateSleepLogByID)
+
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	s.router = r
 }
 
-func errorResponse(err error) gin.H {
-	return gin.H{
-		"error": err.Error(),
-	}
+type errResponse struct {
+	Error string `json:"error"`
+}
+
+func errorResponse(err error) errResponse {
+	return errResponse{Error: err.Error()}
 }

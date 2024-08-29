@@ -1,0 +1,310 @@
+basePath: /api/v1
+definitions:
+  api.createSleepLogRequest:
+    properties:
+      endTime:
+        example: "2020-01-02T08:00:00Z"
+        type: string
+      quality:
+        enum:
+        - Very Poor
+        - Poor
+        - Fair
+        - Good
+        - Very Good
+        - Excellent
+        type: string
+      startTime:
+        example: "2020-01-01T22:00:00Z"
+        type: string
+    required:
+    - endTime
+    - quality
+    - startTime
+    type: object
+  api.createUserRequest:
+    properties:
+      password:
+        example: Str0ngP@ssw0rd!
+        minLength: 10
+        type: string
+      username:
+        example: patient1
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  api.errResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  api.loginUserRequest:
+    properties:
+      password:
+        example: Str0ngP@ssw0rd!
+        type: string
+      username:
+        example: patient1
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  api.loginUserResponse:
+    properties:
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/api.userResponse'
+    type: object
+  api.sleepLogResponse:
+    properties:
+      createdAt:
+        example: "2024-01-01T22:22:22Z"
+        type: string
+      endTime:
+        example: "2020-01-02T08:00:00Z"
+        type: string
+      id:
+        type: string
+      quality:
+        example: Good
+        type: string
+      startTime:
+        example: "2020-01-01T22:00:00Z"
+        type: string
+    required:
+    - endTime
+    - startTime
+    type: object
+  api.updateSleepLogRequest:
+    properties:
+      endTime:
+        example: "2020-01-02T08:00:00Z"
+        type: string
+      quality:
+        enum:
+        - Very Poor
+        - Poor
+        - Fair
+        - Good
+        - Very Good
+        - Excellent
+        type: string
+      startTime:
+        example: "2020-01-01T22:00:00Z"
+        type: string
+    required:
+    - endTime
+    - quality
+    - startTime
+    type: object
+  api.userResponse:
+    properties:
+      created_at:
+        type: string
+      username:
+        type: string
+    type: object
+  pagination.PaginatedResponse-api_sleepLogResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/api.sleepLogResponse'
+        type: array
+      pageNumber:
+        example: 1
+        type: integer
+      pageSize:
+        example: 10
+        type: integer
+      totalItems:
+        example: 100
+        type: integer
+    type: object
+info:
+  contact:
+    name: Wojciech Gawinski
+    url: https://github.com/sk0gen/sleep-tracking-api
+  license:
+    name: MIT License
+    url: https://github.com/stefanprodan/podinfo/blob/master/LICENSE
+  title: Sleep Tracking Api
+  version: "0.1"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login user
+      parameters:
+      - description: User data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/api.loginUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.loginUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.errResponse'
+      summary: Login user
+      tags:
+      - users
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user
+      parameters:
+      - description: User data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/api.createUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.userResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.errResponse'
+      summary: Create user
+      tags:
+      - users
+  /sleep-logs:
+    get:
+      consumes:
+      - application/json
+      description: Get sleep logs
+      parameters:
+      - example: 1
+        in: query
+        name: pageNumber
+        type: integer
+      - example: 10
+        in: query
+        maximum: 100
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pagination.PaginatedResponse-api_sleepLogResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.errResponse'
+      security:
+      - Bearer: []
+      summary: Get sleep logs
+      tags:
+      - sleep-logs
+    post:
+      consumes:
+      - application/json
+      description: Create a new sleep log
+      parameters:
+      - description: Sleep log data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/api.createSleepLogRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.sleepLogResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.errResponse'
+      security:
+      - Bearer: []
+      summary: Create sleep log
+      tags:
+      - sleep-logs
+  /sleep-logs/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes sleep logs
+      parameters:
+      - description: Sleep log ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.errResponse'
+      security:
+      - Bearer: []
+      summary: Deletes sleep log
+      tags:
+      - sleep-logs
+    put:
+      consumes:
+      - application/json
+      description: Updates sleep logs
+      parameters:
+      - description: Sleep log ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Sleep log data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/api.updateSleepLogRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.errResponse'
+      security:
+      - Bearer: []
+      summary: Updates sleep log
+      tags:
+      - sleep-logs
+schemes:
+- http
+securityDefinitions:
+  Bearer:
+    description: Type "Bearer" and then your API Token
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

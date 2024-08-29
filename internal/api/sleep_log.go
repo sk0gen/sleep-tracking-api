@@ -11,11 +11,39 @@ import (
 )
 
 type createSleepLogRequest struct {
-	StartTime time.Time `json:"startTime" binding:"required"`
-	EndTime   time.Time `json:"endTime" binding:"required"`
+	StartTime time.Time `json:"startTime" binding:"required" example:"2020-01-01T22:00:00Z"`
+	EndTime   time.Time `json:"endTime" binding:"required" example:"2020-01-02T08:00:00Z"`
 	Quality   string    `json:"quality" binding:"required,oneof='Very Poor' 'Poor' 'Fair' 'Good' 'Very Good' 'Excellent'"`
 }
 
+type sleepLogResponse struct {
+	ID        uuid.UUID `json:"id"`
+	StartTime time.Time `json:"startTime" binding:"required" example:"2020-01-01T22:00:00Z"`
+	EndTime   time.Time `json:"endTime" binding:"required" example:"2020-01-02T08:00:00Z"`
+	Quality   string    `json:"quality" example:"Good"`
+	CreatedAt time.Time `json:"createdAt" example:"2024-01-01T22:22:22Z"`
+}
+
+func newSleepLogResponse(sleepLog db.SleepLog) sleepLogResponse {
+	return sleepLogResponse{
+		ID:        sleepLog.ID,
+		StartTime: sleepLog.StartTime,
+		EndTime:   sleepLog.EndTime,
+		Quality:   sleepLog.Quality,
+		CreatedAt: sleepLog.CreatedAt,
+	}
+}
+
+// @Summary Create sleep log
+// @Description Create a new sleep log
+// @Tags sleep-logs
+// @Accept json
+// @Produce json
+// @Param input body createSleepLogRequest true "Sleep log data"
+// @Success 200 {object} sleepLogResponse
+// @Failure 400 {object} errResponse
+// @Router /sleep-logs [post]
+// @Security Bearer
 func (s *Server) createSleepLog(ctx *gin.Context) {
 	var req createSleepLogRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -43,10 +71,19 @@ func (s *Server) createSleepLog(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, sleepLog)
+	ctx.JSON(http.StatusOK, newSleepLogResponse(sleepLog))
 }
 
-// GetSleepLogsByUserID returns all sleep logs for a user
+// @Summary Get sleep logs
+// @Description Get sleep logs
+// @Tags sleep-logs
+// @Accept json
+// @Produce json
+// @Param input query pagination.PaginatedRequest false "Pagination"
+// @Success 200 {object} pagination.PaginatedResponse[sleepLogResponse]
+// @Failure 400 {object} errResponse
+// @Router /sleep-logs [get]
+// @Security Bearer
 func (s *Server) getSleepLogs(ctx *gin.Context) {
 	var req pagination.PaginatedRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {
@@ -75,8 +112,13 @@ func (s *Server) getSleepLogs(ctx *gin.Context) {
 		return
 	}
 
-	paginatedResponse := pagination.PaginatedResponse[db.SleepLog]{
-		Results:    sleepLogs,
+	sleepLogsResponse := make([]sleepLogResponse, len(sleepLogs))
+	for i, sleepLog := range sleepLogs {
+		sleepLogsResponse[i] = newSleepLogResponse(sleepLog)
+	}
+
+	paginatedResponse := pagination.PaginatedResponse[sleepLogResponse]{
+		Results:    sleepLogsResponse,
 		PageNumber: req.PageNumber,
 		PageSize:   req.PageSize,
 		TotalItems: sleepLogsCount,
@@ -85,7 +127,16 @@ func (s *Server) getSleepLogs(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, paginatedResponse)
 }
 
-// DeleteSleepLogByID deletes a sleep log by ID
+// @Summary Deletes sleep log
+// @Description Deletes sleep logs
+// @Tags sleep-logs
+// @Accept json
+// @Produce json
+// @Param id path string true "Sleep log ID"
+// @Success 204
+// @Failure 400 {object} errResponse
+// @Router /sleep-logs/{id} [delete]
+// @Security Bearer
 func (s *Server) deleteSleepLogByID(ctx *gin.Context) {
 	var idRequest idUriRequest
 	if err := ctx.ShouldBindUri(&idRequest); err != nil {
@@ -116,11 +167,22 @@ func (s *Server) deleteSleepLogByID(ctx *gin.Context) {
 }
 
 type updateSleepLogRequest struct {
-	StartTime time.Time `json:"startTime" binding:"required"`
-	EndTime   time.Time `json:"endTime" binding:"required"`
+	StartTime time.Time `json:"startTime" binding:"required" example:"2020-01-01T22:00:00Z"`
+	EndTime   time.Time `json:"endTime" binding:"required" example:"2020-01-02T08:00:00Z"`
 	Quality   string    `json:"quality" binding:"required,oneof='Very Poor' 'Poor' 'Fair' 'Good' 'Very Good' 'Excellent'"`
 }
 
+// @Summary Updates sleep log
+// @Description Updates sleep logs
+// @Tags sleep-logs
+// @Accept json
+// @Produce json
+// @Param id path string true "Sleep log ID"
+// @Param input body updateSleepLogRequest true "Sleep log data"
+// @Success 204
+// @Failure 400 {object} errResponse
+// @Router /sleep-logs/{id} [put]
+// @Security Bearer
 func (s *Server) updateSleepLogByID(ctx *gin.Context) {
 	var idRequest idUriRequest
 	if err := ctx.ShouldBindUri(&idRequest); err != nil {

@@ -56,4 +56,8 @@ proto:
 	mkdir -p internal/pb
 	protoc --proto_path=internal/proto --go_out=internal/pb --go_opt=paths=source_relative --go-grpc_out=internal/pb --go-grpc_opt=paths=source_relative internal/proto/*.proto
 
+swagger:
+	cd internal/api && swag init -g server.go --parseDependency
+	cd ../..
+
 .PHONY: all build run docker-up new_migration migration_up docker-down sqlc test clean

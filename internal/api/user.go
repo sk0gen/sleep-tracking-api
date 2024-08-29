@@ -11,8 +11,8 @@ import (
 )
 
 type createUserRequest struct {
-	Username string `json:"username" binding:"required,alphanum"`
-	Password string `json:"password" binding:"required,min=10,strongpassword"`
+	Username string `json:"username" binding:"required,alphanum" example:"patient1"`
+	Password string `json:"password" binding:"required,min=10,strongpassword" example:"Str0ngP@ssw0rd!"`
 }
 
 type userResponse struct {
@@ -27,9 +27,20 @@ func newUserResponse(user db.User) userResponse {
 	}
 }
 
+// @BasePath /api/v1
+// @Summary Create user
+// @Description Create a new user
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param input body createUserRequest true "User data"
+// @Success 200 {object} userResponse
+// @Failure 400 {object} errResponse
+// @Router /auth/register [post]
 func (s *Server) createUser(ctx *gin.Context) {
 	var req createUserRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
+
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
@@ -56,8 +67,8 @@ func (s *Server) createUser(ctx *gin.Context) {
 }
 
 type loginUserRequest struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	Username string `json:"username" binding:"required" example:"patient1"`
+	Password string `json:"password" binding:"required" example:"Str0ngP@ssw0rd!"`
 }
 
 type loginUserResponse struct {
@@ -65,6 +76,15 @@ type loginUserResponse struct {
 	User  userResponse `json:"user"`
 }
 
+// @Summary Login user
+// @Description Login user
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param input body loginUserRequest true "User data"
+// @Success 200 {object} loginUserResponse
+// @Failure 400 {object} errResponse
+// @Router /auth/login [post]
 func (s *Server) loginUser(ctx *gin.Context) {
 	var req loginUserRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
