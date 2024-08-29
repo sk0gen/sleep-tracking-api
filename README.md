@@ -22,7 +22,13 @@ JWT: For secure user authentication and authorization.
 ├── cmd/                # Entry point of the application
 ├── internal/           # Core application logic
 │   ├── api/            # HTTP handlers and routing
+│   ├── config/         # Loads configuration and contains strong type representation of env variables
 │   ├── database/       # Database access and queries
+│   ├── gapi/           # GRPC api definition
+│   ├── logging/        # Initialize Zap logger
+│   ├── pagination/     # Pagination request models
+│   ├── pb              # Implementation of GRPC service
+│   ├── proto/          # Definition of GRPC service
 │   ├── token/          # JWT authentication creation and validation
 ├── util/               # Utility classes/functions used across modules
 └── README.md           # Project documentation
@@ -67,12 +73,11 @@ make run
 
 - <s>Automatic migrations on `make run`</s>
 - [X] GRPC - Implemented simple GRPC server with LoginUser and GetUserSleepLogs methods
-- [ ] Sleep analysis
+- [ ] Sleep analysis - Patterns/Sleep time per week calculation etc...
 - [ ] Tracing/Observability/Metrics
 - [X] API integration tests - Half done. No full coverage in Sleep-logs api
 - [X] Graceful shutdown
-- [X] Zap logger?
+- [X] Zap logger
 - [ ] Export sleep data to file?
-- [ ] Extract sleep data
-- [ ] Swagger
-- <s>Use `go install` to get golang-migrate etc.</s> - Decided to use standalone docker solutions for migrations and sqlc
+- [ ] Extract sleep data - Cursor query for GRPC
+- [X] Swagger
