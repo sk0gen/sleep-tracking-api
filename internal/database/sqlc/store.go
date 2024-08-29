@@ -30,16 +30,21 @@ type SqlStore struct {
 	*Queries
 }
 
-func NewStore(ctx context.Context, cfg Config) (Store, error) {
+func NewStore(ctx context.Context, cfg Config) Store {
 	dbPool, err := pgxpool.New(ctx, cfg.DSN())
 	if nil != err {
+		log.Fatal(err)
+	}
+
+	err = dbPool.Ping(ctx)
+	if err != nil {
 		log.Fatal(err)
 	}
 
 	return &SqlStore{
 		connPool: dbPool,
 		Queries:  New(dbPool),
-	}, nil
+	}
 }
 
 func (store *SqlStore) Close() {

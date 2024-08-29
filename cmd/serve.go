@@ -49,16 +49,16 @@ func runServe(cmd *cobra.Command, args []string) error {
 func realMain() error {
 	cfg := config.NewConfig()
 	logger, err := logging.InitZap(cfg.LogConfig)
+	if err != nil {
+		return err
+	}
 	defer logger.Sync()
 
 	ctx, done := signal.NotifyContext(context.Background(), interruptSignals...)
 
 	defer done()
 
-	db, err := db.NewStore(ctx, cfg.Database)
-	if err != nil {
-		log.Fatal(err)
-	}
+	db := db.NewStore(ctx, cfg.Database)
 	defer db.Close()
 
 	waitGroup, ctx := errgroup.WithContext(ctx)

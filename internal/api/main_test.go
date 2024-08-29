@@ -36,11 +36,7 @@ func TestMain(m *testing.M) {
 	gin.SetMode(gin.TestMode)
 	testDatabase = db.NewTestDatabase()
 
-	var err error
-	testStore, err = db.NewStore(context.Background(), testDatabase.Config)
-	if err != nil {
-		close()
-	}
+	testStore = db.NewStore(context.Background(), testDatabase.Config)
 	code := m.Run()
 	close()
 	os.Exit(code)
