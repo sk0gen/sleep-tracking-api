@@ -66,6 +66,14 @@ make migration_up
 make run
 ```
 
+### Usage
+The SleepTrack API can be accessed and tested through Swagger UI. Once the server is running, you can explore and interact with the API endpoints at (If the example configuration is used)
+
+```
+http://localhost:8080/swagger/index.html
+```
+This Swagger interface provides a user-friendly way to view all available endpoints, their parameters, and even test the API directly from your browser.
+
 
 # To-Do List for Sleep Tracker API Project
 
