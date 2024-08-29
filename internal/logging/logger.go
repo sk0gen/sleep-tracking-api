@@ -3,6 +3,8 @@ package logging
 import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"gopkg.in/natefinch/lumberjack.v2"
+	"os"
 )
 
 type Config struct {
@@ -11,16 +13,8 @@ type Config struct {
 }
 
 const (
-	encodingConsole = "console"
-	encodingJSON    = "json"
+	encodingJSON = "json"
 )
-
-func encoding(cfg Config) string {
-	if cfg.DevelopmentMode {
-		return encodingConsole
-	}
-	return encodingJSON
-}
 
 func InitZap(cfg Config) (*zap.Logger, error) {
 	level := zap.NewAtomicLevelAt(zapcore.InfoLevel)
@@ -39,6 +33,13 @@ func InitZap(cfg Config) (*zap.Logger, error) {
 		level = zap.NewAtomicLevelAt(zapcore.PanicLevel)
 	}
 
+	writeSyncer := zapcore.AddSync(&lumberjack.Logger{
+		Filename:   "./logs/sleep-tracking-api.logs",
+		MaxSize:    500,
+		MaxBackups: 3,
+		MaxAge:     28,
+	})
+
 	zapEncoderConfig := zapcore.EncoderConfig{
 		TimeKey:        "ts",
 		LevelKey:       "level",
@@ -56,11 +57,16 @@ func InitZap(cfg Config) (*zap.Logger, error) {
 	zapConfig := zap.Config{
 		Level:            level,
 		Development:      cfg.DevelopmentMode,
-		Encoding:         encoding(cfg),
+		Encoding:         encodingJSON,
 		EncoderConfig:    zapEncoderConfig,
 		OutputPaths:      []string{"stderr"},
 		ErrorOutputPaths: []string{"stderr"},
 	}
 
-	return zapConfig.Build()
+	fileCore := zapcore.NewCore(zapcore.NewJSONEncoder(zapConfig.EncoderConfig), writeSyncer, level)
+	consoleCore := zapcore.NewCore(zapcore.NewConsoleEncoder(zapConfig.EncoderConfig), zapcore.AddSync(os.Stdout), level)
+
+	core := zapcore.NewTee(fileCore, consoleCore)
+	logger := zap.New(core)
+	return logger, nil
 }
