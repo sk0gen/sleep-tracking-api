@@ -39,6 +39,13 @@ Prerequisites
 * Go (version 1.19+)
 * Docker
 
+Development tools (optional):
+* Protobuf compiler (brew install protobuf)
+* Cobra CLI generator (go install github.com/spf13/cobra/cobra)
+* Protoc-gen-go (go install github.com/golang/protobuf/protoc-gen-go)
+* Protoc-gen-go-grpc (go install google.golang.org/grpc/cmd/protoc-gen-go-grpc)
+* Swag-go (go install github.com/swaggo/swag/cmd/swag)
+
 ### Installation
 1. Clone the repository:
 ```
@@ -79,13 +86,12 @@ This Swagger interface provides a user-friendly way to view all available endpoi
 
 ## Backend Development
 
-- <s>Automatic migrations on `make run`</s>
 - [X] GRPC - Implemented simple GRPC server with LoginUser and GetUserSleepLogs methods
-- [ ] Sleep analysis - Patterns/Sleep time per week calculation etc...
-- [ ] Tracing/Observability/Metrics
-- [X] API integration tests - Half done. No full coverage in Sleep-logs api
-- [X] Graceful shutdown
 - [X] Zap logger
+- [X] Graceful shutdown
+- [X] API integration tests - Half done. No full coverage in Sleep-logs api
+- [X] Swagger
+- [ ] Tracing/Observability/Metrics
 - [ ] Export sleep data to file?
 - [ ] Extract sleep data - Cursor query for GRPC
-- [X] Swagger
+- [ ] Sleep analysis - Patterns/Sleep time per week calculation etc...
